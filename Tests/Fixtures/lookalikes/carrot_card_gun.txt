@@ -1,0 +1,2 @@
+﻿# In-game card labelled 'Carrot'. Expected item: name | origin
+Carrot Gun | Easter 2024

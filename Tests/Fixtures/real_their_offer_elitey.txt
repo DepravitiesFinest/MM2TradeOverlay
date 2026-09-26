@@ -1,0 +1,3 @@
+﻿# Real MM2 trade, their-offer box. 'Elitey' (a pet) must not be read as 'Elite' (a knife).
+# The 'OTHER PLAYER HAS ACCEPTED' banner runs across the box.
+Elitey x1

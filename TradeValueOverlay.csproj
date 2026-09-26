@@ -1,0 +1,39 @@
+<!--
+    MM2 Trade Overlay
+    Copyright (c) 2026 Hyper (https://github.com/DepravitiesFinest)
+    Licensed under the MIT License. See LICENSE in the project root.
+-->
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\app.ico</ApplicationIcon>
+    <AssemblyName>MM2TradeOverlay</AssemblyName>
+    <RootNamespace>TradeValueOverlay</RootNamespace>
+    <Product>MM2 Trade Overlay</Product>
+    <Version>1.0.0</Version>
+    <Authors>Hyper</Authors>
+    <Company>Hyper</Company>
+    <Copyright>Copyright (c) 2026 Hyper</Copyright>
+    <Description>Screen-reading trade value overlay for Murder Mystery 2.</Description>
+    <RepositoryUrl>https://github.com/DepravitiesFinest/MM2TradeOverlay</RepositoryUrl>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Using Include="System.IO" />
+    <Using Include="System.Net.Http" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\values.json" LogicalName="values.json" />
+    <Resource Include="Assets\app.ico" />
+    <Resource Include="Assets\app.png" />
+  </ItemGroup>
+
+</Project>

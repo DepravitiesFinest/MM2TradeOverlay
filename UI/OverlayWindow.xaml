@@ -1,0 +1,82 @@
+<!--
+    MM2 Trade Overlay
+    Copyright (c) 2026 Hyper (https://github.com/DepravitiesFinest)
+    Licensed under the MIT License. See LICENSE in the project root.
+-->
+<Window x:Class="TradeValueOverlay.OverlayWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MM2 Trade Overlay"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+        Topmost="True" ShowInTaskbar="False" ShowActivated="False" ResizeMode="NoResize"
+        SizeToContent="Height" Width="384"
+        FontFamily="{StaticResource UiFont}" FontSize="13" Foreground="{DynamicResource TextBrush}"
+        UseLayoutRounding="True" TextOptions.TextFormattingMode="Display">
+
+    <Grid x:Name="Root" Margin="16">
+        <Border CornerRadius="18" Background="#08090B" Margin="2">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="30" ShadowDepth="8" Direction="270" Opacity="0.6" Color="Black"/>
+            </Border.Effect>
+        </Border>
+
+        <Border x:Name="Card" CornerRadius="18" Background="{DynamicResource OverlayBgBrush}"
+                BorderBrush="{DynamicResource BorderStrongBrush}" BorderThickness="1" RenderTransformOrigin="1,0.5">
+            <Border.RenderTransform>
+                <TranslateTransform x:Name="Slide"/>
+            </Border.RenderTransform>
+            <StackPanel>
+                <Grid x:Name="Header" Background="Transparent" Margin="16,12,10,0" Cursor="SizeAll">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Source="pack://application:,,,/Assets/app.png" Width="22" Height="22" Margin="0,0,10,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                    <TextBlock Grid.Column="1" Text="Trade check" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="2" Text="{Binding Time}" Foreground="{DynamicResource TextFaintBrush}" FontSize="12"
+                               VerticalAlignment="Center" Margin="0,0,6,0"/>
+                    <Button Grid.Column="3" Style="{StaticResource IconButton}" Content="&#xE72C;" ToolTip="Scan again"
+                            Click="Rescan_Click" Focusable="False"/>
+                    <Button Grid.Column="4" Style="{StaticResource IconButton}" Content="&#xE8BB;" ToolTip="Hide"
+                            Click="Close_Click" Focusable="False"/>
+                </Grid>
+
+                <StackPanel x:Name="ResultPanel" Visibility="{Binding ShowResult, Converter={StaticResource BoolToVis}}">
+                    <ContentControl x:Name="Hero" Content="{Binding}" ContentTemplate="{StaticResource VerdictHero}"
+                                    Margin="10,12,10,0" Focusable="False"/>
+
+                    <ScrollViewer x:Name="ItemsList" MaxHeight="420" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0,14,0,0">
+                        <StackPanel Margin="18,0,16,0">
+                            <ContentControl Content="{Binding Give}" ContentTemplate="{StaticResource OfferSection}" Focusable="False"/>
+                            <Border Style="{StaticResource Divider}" Margin="0,10"/>
+                            <ContentControl Content="{Binding Get}" ContentTemplate="{StaticResource OfferSection}" Focusable="False"/>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <Border Style="{StaticResource Note}" Margin="18,14,18,0" Visibility="{Binding HasWarnings, Converter={StaticResource BoolToVis}}">
+                        <TextBlock Text="{Binding WarningText}" TextWrapping="Wrap" FontSize="11.5" LineHeight="17" Foreground="{DynamicResource TextMutedBrush}"/>
+                    </Border>
+                </StackPanel>
+
+                <StackPanel Margin="18,14,18,4" Visibility="{Binding ShowEmpty, Converter={StaticResource BoolToVis}}">
+                    <TextBlock Text="No items found" FontSize="16" FontWeight="SemiBold"/>
+                    <TextBlock Style="{StaticResource Muted}" Margin="0,6,0,0" LineHeight="18"
+                               Text="Make sure the trade window is open with items in it. If it is, the capture regions are probably off. Recalibrate from the app."/>
+                </StackPanel>
+
+                <StackPanel Margin="18,14,18,4" Visibility="{Binding IsError, Converter={StaticResource BoolToVis}}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE783;" Style="{StaticResource Icon}" Foreground="{DynamicResource LossBrush}" Margin="0,0,8,0"/>
+                        <TextBlock Text="{Binding ErrorTitle}" FontSize="16" FontWeight="SemiBold"/>
+                    </StackPanel>
+                    <TextBlock Text="{Binding ErrorMessage}" Style="{StaticResource Muted}" Margin="0,6,0,0" LineHeight="18"/>
+                </StackPanel>
+
+                <StackPanel x:Name="Footer" Orientation="Horizontal" Margin="18,12,18,14"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

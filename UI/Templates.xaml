@@ -1,0 +1,240 @@
+<!--
+    MM2 Trade Overlay
+    Copyright (c) 2026 Hyper (https://github.com/DepravitiesFinest)
+    Licensed under the MIT License. See LICENSE in the project root.
+-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:TradeValueOverlay">
+
+    <DataTemplate x:Key="ValueChip">
+        <Grid ToolTip="{Binding ValueTooltip}" Background="Transparent">
+            <TextBlock Text="{Binding ValueText}" FontWeight="SemiBold" FontSize="13.5" Typography.NumeralAlignment="Tabular"
+                       HorizontalAlignment="Right" VerticalAlignment="Center"
+                       Visibility="{Binding IsTier, Converter={StaticResource InverseBoolToVis}}"/>
+            <Border CornerRadius="6" Padding="7,2,7,3" HorizontalAlignment="Right" VerticalAlignment="Center"
+                    Visibility="{Binding IsTier, Converter={StaticResource BoolToVis}}">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Background" Value="{DynamicResource CommonSoftBrush}"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Unit}" Value="Legendary"><Setter Property="Background" Value="{DynamicResource LegendarySoftBrush}"/></DataTrigger>
+                            <DataTrigger Binding="{Binding Unit}" Value="Rare"><Setter Property="Background" Value="{DynamicResource RareSoftBrush}"/></DataTrigger>
+                            <DataTrigger Binding="{Binding Unit}" Value="Uncommon"><Setter Property="Background" Value="{DynamicResource UncommonSoftBrush}"/></DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <TextBlock Text="{Binding ValueText}" FontWeight="Bold" FontSize="12" Typography.NumeralAlignment="Tabular">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="{DynamicResource CommonBrush}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Unit}" Value="Legendary"><Setter Property="Foreground" Value="{DynamicResource LegendaryBrush}"/></DataTrigger>
+                                <DataTrigger Binding="{Binding Unit}" Value="Rare"><Setter Property="Foreground" Value="{DynamicResource RareBrush}"/></DataTrigger>
+                                <DataTrigger Binding="{Binding Unit}" Value="Uncommon"><Setter Property="Foreground" Value="{DynamicResource UncommonBrush}"/></DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Border>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ItemIcon">
+        <Border Width="36" Height="36" CornerRadius="9" Background="{DynamicResource Surface3Brush}">
+            <Grid>
+                <TextBlock Text="{Binding Initial}" FontWeight="SemiBold" Foreground="{DynamicResource TextMutedBrush}"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                           Visibility="{Binding HasIcon, Converter={StaticResource InverseBoolToVis}}"/>
+                <Image Source="{Binding Icon}" Margin="3" RenderOptions.BitmapScalingMode="HighQuality"/>
+            </Grid>
+        </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ItemRow" DataType="{x:Type local:ItemRowVM}">
+        <Grid x:Name="Row" Margin="0,5" Background="Transparent">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="36"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <ContentControl Content="{Binding}" ContentTemplate="{StaticResource ItemIcon}" Focusable="False"/>
+
+            <StackPanel Grid.Column="1" Margin="12,0,8,0" VerticalAlignment="Center">
+                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                <TextBlock Text="{Binding Subtitle}" FontSize="11" Foreground="{DynamicResource TextFaintBrush}"
+                           TextTrimming="CharacterEllipsis" Margin="0,2,0,0"/>
+            </StackPanel>
+
+            <Button Grid.Column="2" Command="{Binding CycleVariant}" ToolTip="{Binding VariantTooltip}"
+                    Visibility="{Binding IsAmbiguous, Converter={StaticResource BoolToVis}}"
+                    Cursor="Hand" Margin="0,0,10,0" VerticalAlignment="Center" Focusable="False">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{DynamicResource NeutralSoftBrush}" BorderBrush="{DynamicResource BorderStrongBrush}"
+                                BorderThickness="1" CornerRadius="6" Padding="6,2">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock x:Name="Glyph" Text="&#xE8AB;" FontFamily="{StaticResource IconFont}" FontSize="9"
+                                           Foreground="{DynamicResource TextMutedBrush}" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                <TextBlock x:Name="Label" Text="{Binding VariantBadge}" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource TextMutedBrush}"/>
+                            </StackPanel>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <DataTrigger Binding="{Binding NeedsChoice}" Value="True">
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource WarnBrush}"/>
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource WarnSoftBrush}"/>
+                                <Setter TargetName="Glyph" Property="Foreground" Value="{DynamicResource WarnBrush}"/>
+                                <Setter TargetName="Label" Property="Foreground" Value="{DynamicResource WarnBrush}"/>
+                            </DataTrigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource TextFaintBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+
+            <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
+                <Button x:Name="Qty" Command="{Binding MoreCommand}" ToolTip="{Binding QuantityTooltip}" Focusable="False"
+                        Cursor="Hand" Margin="0,0,6,0" VerticalAlignment="Center" Opacity="0">
+                    <Button.InputBindings>
+                        <MouseBinding MouseAction="RightClick" Command="{Binding LessCommand}"/>
+                    </Button.InputBindings>
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="Bd" CornerRadius="5" Padding="6,1,6,2" Background="Transparent"
+                                    BorderBrush="Transparent" BorderThickness="1">
+                                <TextBlock x:Name="T" Text="{Binding QuantityText}" FontSize="12" Foreground="{DynamicResource TextFaintBrush}"
+                                           Typography.NumeralAlignment="Tabular"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource BorderStrongBrush}"/>
+                                    <Setter TargetName="T" Property="Foreground" Value="{DynamicResource TextBrush}"/>
+                                </Trigger>
+                                <DataTrigger Binding="{Binding IsAdjusted}" Value="True">
+                                    <Setter TargetName="T" Property="Foreground" Value="{DynamicResource AccentHotBrush}"/>
+                                </DataTrigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <ContentControl Content="{Binding}" ContentTemplate="{StaticResource ValueChip}" MinWidth="40" Focusable="False"/>
+            </StackPanel>
+        </Grid>
+        <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding ShowQuantity}" Value="True">
+                <Setter TargetName="Qty" Property="Opacity" Value="1"/>
+            </DataTrigger>
+            <Trigger SourceName="Row" Property="IsMouseOver" Value="True">
+                <Setter TargetName="Qty" Property="Opacity" Value="1"/>
+            </Trigger>
+        </DataTemplate.Triggers>
+    </DataTemplate>
+
+    <DataTemplate x:Key="OfferSection" DataType="{x:Type local:OfferVM}">
+        <StackPanel>
+            <Grid>
+                <TextBlock VerticalAlignment="Bottom">
+                    <Run Text="{Binding Title, Mode=OneWay}" FontWeight="SemiBold" FontSize="13"/>
+                    <Run Text="{Binding CountText, Mode=OneWay}" Foreground="{DynamicResource TextFaintBrush}" FontSize="11.5"/>
+                </TextBlock>
+                <TextBlock Text="{Binding TotalText}" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                           FontWeight="SemiBold" FontSize="13" Typography.NumeralAlignment="Tabular"/>
+            </Grid>
+            <Border Height="1" Background="{DynamicResource LineBrush}" Margin="0,9,0,4"/>
+            <ItemsControl ItemsSource="{Binding Rows}" ItemTemplate="{StaticResource ItemRow}" Focusable="False"/>
+            <TextBlock Text="Nothing on this side yet" Foreground="{DynamicResource TextFaintBrush}" FontSize="12" Margin="0,8,0,2"
+                       Visibility="{Binding IsEmpty, Converter={StaticResource BoolToVis}}"/>
+        </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="VerdictHero" DataType="{x:Type local:TradeVM}">
+        <Border CornerRadius="12" Padding="18,16,18,15" Background="{DynamicResource Surface2Brush}">
+            <StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="You give" FontSize="11.5" Foreground="{DynamicResource TextMutedBrush}"/>
+                        <TextBlock Text="{Binding Give.TotalText}" FontFamily="{StaticResource DisplayFont}" FontSize="28" FontWeight="SemiBold"
+                                   Typography.NumeralAlignment="Tabular" Margin="0,1,0,0"/>
+                        <TextBlock Text="{Binding Give.SummaryText}" FontSize="11.5" Foreground="{DynamicResource TextFaintBrush}"/>
+                    </StackPanel>
+                    <Border Grid.Column="1" Width="1" Background="{DynamicResource LineBrush}" Margin="16,2"/>
+                    <StackPanel Grid.Column="2" HorizontalAlignment="Right">
+                        <TextBlock Text="You get" FontSize="11.5" Foreground="{DynamicResource TextMutedBrush}" HorizontalAlignment="Right"/>
+                        <TextBlock Text="{Binding Get.TotalText}" FontFamily="{StaticResource DisplayFont}" FontSize="28" FontWeight="SemiBold"
+                                   Typography.NumeralAlignment="Tabular" Margin="0,1,0,0" HorizontalAlignment="Right"/>
+                        <TextBlock Text="{Binding Get.SummaryText}" FontSize="11.5" Foreground="{DynamicResource TextFaintBrush}" HorizontalAlignment="Right"/>
+                    </StackPanel>
+                </Grid>
+
+                <local:BalanceMeter Target="{Binding MeterPosition}" Margin="0,16,0,0"
+                                    Track="{DynamicResource Surface3Brush}" Tick="{DynamicResource TextFaintBrush}" Cutout="{DynamicResource Surface2Brush}">
+                    <local:BalanceMeter.Style>
+                        <Style TargetType="local:BalanceMeter">
+                            <Setter Property="Fill" Value="{DynamicResource TextMutedBrush}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Verdict}" Value="Win"><Setter Property="Fill" Value="{DynamicResource WinBrush}"/></DataTrigger>
+                                <DataTrigger Binding="{Binding Verdict}" Value="Loss"><Setter Property="Fill" Value="{DynamicResource LossBrush}"/></DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </local:BalanceMeter.Style>
+                </local:BalanceMeter>
+                <Grid Margin="0,5,0,0">
+                    <TextBlock Text="Overpay" FontSize="10.5" Foreground="{DynamicResource TextFaintBrush}"/>
+                    <TextBlock Text="Even" FontSize="10.5" Foreground="{DynamicResource TextFaintBrush}" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Profit" FontSize="10.5" Foreground="{DynamicResource TextFaintBrush}" HorizontalAlignment="Right"/>
+                </Grid>
+
+                <Border Height="1" Background="{DynamicResource LineBrush}" Margin="0,13,0,12"/>
+
+                <TextBlock Text="{Binding Headline}" FontSize="15" FontWeight="SemiBold" TextWrapping="Wrap">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Verdict}" Value="Win"><Setter Property="Foreground" Value="{DynamicResource WinBrush}"/></DataTrigger>
+                                <DataTrigger Binding="{Binding Verdict}" Value="Loss"><Setter Property="Foreground" Value="{DynamicResource LossBrush}"/></DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+                <TextBlock Text="{Binding Subline}" FontSize="12" Foreground="{DynamicResource TextMutedBrush}" Margin="0,3,0,0" TextWrapping="Wrap"/>
+                <TextBlock Text="{Binding DemandNote}" FontSize="12" Margin="0,8,0,0" TextWrapping="Wrap"
+                           Visibility="{Binding HasDemandNote, Converter={StaticResource BoolToVis}}">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="{DynamicResource WarnBrush}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding DemandNoteIsGood}" Value="True"><Setter Property="Foreground" Value="{DynamicResource WinBrush}"/></DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </StackPanel>
+        </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ValueRow" DataType="{x:Type local:ValueRowVM}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="36"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <ContentControl Content="{Binding}" ContentTemplate="{StaticResource ItemIcon}" Focusable="False"/>
+            <StackPanel Grid.Column="1" Margin="12,0,8,0" VerticalAlignment="Center">
+                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                <TextBlock Text="{Binding Subtitle}" FontSize="11" Foreground="{DynamicResource TextFaintBrush}" TextTrimming="CharacterEllipsis" Margin="0,2,0,0"/>
+            </StackPanel>
+            <ContentControl Grid.Column="2" Content="{Binding}" ContentTemplate="{StaticResource ValueChip}" MinWidth="48" Focusable="False"/>
+        </Grid>
+    </DataTemplate>
+</ResourceDictionary>

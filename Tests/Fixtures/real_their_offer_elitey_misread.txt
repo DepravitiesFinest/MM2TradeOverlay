@@ -1,0 +1,3 @@
+﻿# Same card with the 'y' painted out, reproducing a live scan that read 'Elite'.
+# The card's picture (a skull pet) must override the text (Elite is a knife).
+Elitey x1

@@ -1,0 +1,213 @@
+<!--
+    MM2 Trade Overlay
+    Copyright (c) 2026 Hyper (https://github.com/DepravitiesFinest)
+    Licensed under the MIT License. See LICENSE in the project root.
+-->
+<UserControl x:Class="TradeValueOverlay.SettingsPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:TradeValueOverlay">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="40,4,40,40" MaxWidth="760">
+            <TextBlock Text="Settings" Style="{StaticResource PageTitle}"/>
+
+            <TextBlock Text="Appearance" Style="{StaticResource SectionLabel}"/>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <Grid>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Accent colour" FontWeight="SemiBold"/>
+                            <TextBlock x:Name="AccentName" Style="{StaticResource Muted}" Margin="0,3,0,0"/>
+                        </StackPanel>
+                        <StackPanel x:Name="AccentPanel" Orientation="Horizontal" HorizontalAlignment="Right"/>
+                    </Grid>
+                    <Border Style="{StaticResource Divider}"/>
+                    <Grid>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Background" FontWeight="SemiBold"/>
+                            <TextBlock Text="Applies to the app and the in-game overlay" Style="{StaticResource Muted}" Margin="0,3,0,0"/>
+                        </StackPanel>
+                        <Border Style="{StaticResource SegmentHost}" HorizontalAlignment="Right" VerticalAlignment="Center">
+                            <StackPanel x:Name="BasePanel" Orientation="Horizontal"/>
+                        </Border>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <TextBlock Text="Shortcuts" Style="{StaticResource SectionLabel}"/>
+            <Border Style="{StaticResource Card}" Padding="20,4">
+                <StackPanel>
+                    <Grid Margin="0,14">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Scan trade" FontWeight="SemiBold"/>
+                            <TextBlock Text="Reads both offers and shows the result over the game" Style="{StaticResource Muted}" Margin="0,3,0,0"/>
+                        </StackPanel>
+                        <local:HotkeyBox x:Name="ScanHotkeyBox" Style="{StaticResource HotkeyBoxStyle}" HorizontalAlignment="Right" Tag="{x:Static local:HotkeySlot.Scan}"/>
+                    </Grid>
+                    <Border Height="1" Background="{DynamicResource LineBrush}"/>
+                    <Grid Margin="0,14">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Hide overlay" FontWeight="SemiBold"/>
+                            <TextBlock Text="Dismiss the result card" Style="{StaticResource Muted}" Margin="0,3,0,0"/>
+                        </StackPanel>
+                        <local:HotkeyBox x:Name="HideHotkeyBox" Style="{StaticResource HotkeyBoxStyle}" HorizontalAlignment="Right" Tag="{x:Static local:HotkeySlot.Hide}"/>
+                    </Grid>
+                    <Border Height="1" Background="{DynamicResource LineBrush}"/>
+                    <Grid Margin="0,14">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Calibrate" FontWeight="SemiBold"/>
+                            <TextBlock Text="Redraw the two offer boxes" Style="{StaticResource Muted}" Margin="0,3,0,0"/>
+                        </StackPanel>
+                        <local:HotkeyBox x:Name="CalibrateHotkeyBox" Style="{StaticResource HotkeyBoxStyle}" HorizontalAlignment="Right" Tag="{x:Static local:HotkeySlot.Calibrate}"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <TextBlock Text="Capture" Style="{StaticResource SectionLabel}"/>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <Grid>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Offer regions" FontWeight="SemiBold"/>
+                            <TextBlock x:Name="RegionText" Style="{StaticResource Muted}" Margin="0,3,0,0"/>
+                        </StackPanel>
+                        <Button x:Name="CalibrateButton" Style="{StaticResource SecondaryButton}" HorizontalAlignment="Right" Click="Calibrate_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE7A8;" Style="{StaticResource Icon}" FontSize="12" Margin="0,0,8,0"/>
+                                <TextBlock x:Name="CalibrateText" Text="Recalibrate"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                    <Border Style="{StaticResource Divider}"/>
+                    <CheckBox x:Name="DebugToggle" Style="{StaticResource ToggleSwitch}" Checked="Toggle_Changed" Unchecked="Toggle_Changed">
+                        <StackPanel>
+                            <TextBlock Text="Save debug captures" FontWeight="SemiBold"/>
+                            <TextBlock Style="{StaticResource Muted}" Margin="0,3,0,0">
+                                <Run Text="Keeps each scan's screenshots and raw OCR text, useful for bug reports."/>
+                                <Hyperlink Click="OpenDebug_Click" Foreground="{DynamicResource AccentHotBrush}" TextDecorations="{x:Null}">Open folder</Hyperlink>
+                            </TextBlock>
+                        </StackPanel>
+                    </CheckBox>
+                </StackPanel>
+            </Border>
+
+            <TextBlock Text="Overlay" Style="{StaticResource SectionLabel}"/>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <Grid>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Auto-hide" FontWeight="SemiBold"/>
+                            <TextBlock Text="Close the result card after a while" Style="{StaticResource Muted}" Margin="0,3,0,0"/>
+                        </StackPanel>
+                        <Border Style="{StaticResource SegmentHost}" HorizontalAlignment="Right" VerticalAlignment="Center">
+                            <StackPanel x:Name="AutoHidePanel" Orientation="Horizontal">
+                                <RadioButton Style="{StaticResource Segment}" GroupName="AutoHide" Content="Never" Tag="0" Checked="AutoHide_Checked"/>
+                                <RadioButton Style="{StaticResource Segment}" GroupName="AutoHide" Content="10s" Tag="10" Checked="AutoHide_Checked"/>
+                                <RadioButton Style="{StaticResource Segment}" GroupName="AutoHide" Content="30s" Tag="30" Checked="AutoHide_Checked"/>
+                                <RadioButton Style="{StaticResource Segment}" GroupName="AutoHide" Content="60s" Tag="60" Checked="AutoHide_Checked"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                    <Border Style="{StaticResource Divider}"/>
+                    <Grid>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Position" FontWeight="SemiBold"/>
+                            <TextBlock Text="Drag the overlay by its header to move it anywhere" Style="{StaticResource Muted}" Margin="0,3,0,0"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Style="{StaticResource GhostButton}" Content="Reset" Click="ResetPosition_Click" Margin="0,0,6,0"/>
+                            <Button Style="{StaticResource SecondaryButton}" Content="Preview" Click="Preview_Click"/>
+                        </StackPanel>
+                    </Grid>
+                    <Border Style="{StaticResource Divider}"/>
+                    <Grid>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Size" FontWeight="SemiBold"/>
+                            <TextBlock Text="Scale the overlay up or down" Style="{StaticResource Muted}" Margin="0,3,0,0"/>
+                        </StackPanel>
+                        <Border Style="{StaticResource SegmentHost}" HorizontalAlignment="Right" VerticalAlignment="Center">
+                            <StackPanel x:Name="ScalePanel" Orientation="Horizontal"/>
+                        </Border>
+                    </Grid>
+                    <Border Style="{StaticResource Divider}"/>
+                    <Grid>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Background" FontWeight="SemiBold"/>
+                            <TextBlock Text="How solid the overlay is over the game" Style="{StaticResource Muted}" Margin="0,3,0,0"/>
+                        </StackPanel>
+                        <Border Style="{StaticResource SegmentHost}" HorizontalAlignment="Right" VerticalAlignment="Center">
+                            <StackPanel x:Name="OpacityPanel" Orientation="Horizontal"/>
+                        </Border>
+                    </Grid>
+                    <Border Style="{StaticResource Divider}"/>
+                    <CheckBox x:Name="CompactToggle" Style="{StaticResource ToggleSwitch}" Checked="Toggle_Changed" Unchecked="Toggle_Changed">
+                        <StackPanel>
+                            <TextBlock Text="Compact mode" FontWeight="SemiBold"/>
+                            <TextBlock Text="Show only the totals and verdict, without the item lists" Style="{StaticResource Muted}" Margin="0,3,0,0"/>
+                        </StackPanel>
+                    </CheckBox>
+                </StackPanel>
+            </Border>
+
+            <TextBlock Text="Trading" Style="{StaticResource SectionLabel}"/>
+            <Border Style="{StaticResource Card}">
+                <Grid>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="Fair trade range" FontWeight="SemiBold"/>
+                        <TextBlock Text="How close the two sides need to be to count as fair" Style="{StaticResource Muted}" Margin="0,3,0,0"/>
+                    </StackPanel>
+                    <Border Style="{StaticResource SegmentHost}" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <StackPanel x:Name="FairPanel" Orientation="Horizontal"/>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <TextBlock Text="General" Style="{StaticResource SectionLabel}"/>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <CheckBox x:Name="SoundToggle" Style="{StaticResource ToggleSwitch}" Checked="Toggle_Changed" Unchecked="Toggle_Changed">
+                        <StackPanel>
+                            <TextBlock Text="Sound effects" FontWeight="SemiBold"/>
+                            <TextBlock Text="Short cues for scans, results and actions" Style="{StaticResource Muted}" Margin="0,3,0,0"/>
+                        </StackPanel>
+                    </CheckBox>
+                    <Border Style="{StaticResource Divider}"/>
+                    <Grid>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Volume" FontWeight="SemiBold"/>
+                            <TextBlock Text="How loud those cues are" Style="{StaticResource Muted}" Margin="0,3,0,0"/>
+                        </StackPanel>
+                        <Border Style="{StaticResource SegmentHost}" HorizontalAlignment="Right" VerticalAlignment="Center">
+                            <StackPanel x:Name="VolumePanel" Orientation="Horizontal"/>
+                        </Border>
+                    </Grid>
+                    <Border Style="{StaticResource Divider}"/>
+                    <CheckBox x:Name="AutoUpdateToggle" Style="{StaticResource ToggleSwitch}" Checked="Toggle_Changed" Unchecked="Toggle_Changed">
+                        <StackPanel>
+                            <TextBlock Text="Keep values up to date" FontWeight="SemiBold"/>
+                            <TextBlock Text="Refresh on launch when the list is more than 3 days old" Style="{StaticResource Muted}" Margin="0,3,0,0"/>
+                        </StackPanel>
+                    </CheckBox>
+                </StackPanel>
+            </Border>
+
+            <TextBlock Text="About" Style="{StaticResource SectionLabel}"/>
+            <Border Style="{StaticResource Card}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Source="pack://application:,,,/Assets/app.png" Width="44" Height="44" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Top"/>
+                    <StackPanel Grid.Column="1" Margin="14,0,12,0">
+                        <TextBlock x:Name="AboutTitle" FontWeight="SemiBold"/>
+                        <TextBlock Style="{StaticResource Muted}" Margin="0,4,0,0" LineHeight="18"
+                                   Text="Reads your screen with Windows' built-in OCR. It never injects into, modifies or reads memory from Roblox. Values and item images come from mm2values.com. Not affiliated with Roblox, Nikilis or mm2values.com."/>
+                    </StackPanel>
+                    <Button Grid.Column="2" Style="{StaticResource GhostButton}" Content="Open data folder" Click="OpenData_Click" VerticalAlignment="Top"/>
+                </Grid>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
