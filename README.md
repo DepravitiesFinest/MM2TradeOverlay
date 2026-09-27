@@ -243,7 +243,7 @@ To refresh the value list that ships inside the exe, run with `--fetch`, copy `s
 
 Made by **Hyper** ([github.com/DepravitiesFinest](https://github.com/DepravitiesFinest)).
 
-Item values, demand ratings and item images come from [MM2Values.com](https://www.mm2values.com). Thanks to the MM2Values team for supporting the project. This project isn't affiliated with Roblox, Nikilis or MM2Values.
+Item values, demand ratings and item images come from [MM2Values.com](https://www.mm2values.com). This project isn't affiliated with Roblox, Nikilis or MM2Values.
 
 ## License
 
