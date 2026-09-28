@@ -27,6 +27,7 @@ public sealed class AppSettings
     public bool SaveDebugCaptures { get; set; }
     public bool SoundsEnabled { get; set; } = true;
     public string Accent { get; set; } = "violet";
+    public string? CustomAccent { get; set; }
     public string ThemeBase { get; set; } = "dark";
 
     public int OverlayScale { get; set; } = 100;
@@ -38,6 +39,8 @@ public sealed class AppSettings
     public int FairPercent { get; set; } = 3;
 
     public int SoundVolume { get; set; } = 1;
+
+    public bool DiscordPresence { get; set; } = true;
 
     public Dictionary<string, string> VariantChoices { get; set; } = new();
 

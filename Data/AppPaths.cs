@@ -35,6 +35,10 @@ public static class AppInfo
 {
     public static string Version { get; } =
         Assembly.GetExecutingAssembly().GetName().Version is { } v ? $"{v.Major}.{v.Minor}.{v.Build}" : "dev";
+
+    public const string GitHubUrl = "https://github.com/DepravitiesFinest/MM2TradeOverlay";
+    public const string ReleasesUrl = GitHubUrl + "/releases/latest";
+    public const string DiscordUrl = "https://discord.gg/M8kF83Uzms";
 }
 
 public static class Log

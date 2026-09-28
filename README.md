@@ -12,7 +12,8 @@
 <p align="center">
   <a href="https://github.com/DepravitiesFinest/MM2TradeOverlay/releases/latest">Download</a> ·
   <a href="#using-it">How to use</a> ·
-  <a href="#building-from-source">Build it yourself</a>
+  <a href="#building-from-source">Build it yourself</a> ·
+  <a href="https://discord.gg/M8kF83Uzms">Discord</a>
 </p>
 
 <p align="center">
@@ -51,6 +52,8 @@ Roblox can be windowed, maximised or fullscreen.
 1. Download `MM2TradeOverlay.exe` from the [latest release](https://github.com/DepravitiesFinest/MM2TradeOverlay/releases/latest).
 2. Put it wherever you like, for example a folder in Documents.
 3. Run it. Windows SmartScreen may warn about an unrecognised app the first time; click **More info** and then **Run anyway**. The full source is here if you'd rather build it yourself.
+
+The app is free, and this GitHub page is the only official place to get it. If you downloaded it from anywhere else, it isn't legitimate software, and if you paid for it, you were scammed.
 
 There's no installer. Settings, the downloaded value list and cached item images live in `%LOCALAPPDATA%\MM2TradeOverlay`. To remove the app completely, delete the exe and that folder.
 
@@ -124,7 +127,8 @@ If a quantity is ever read wrong, hover over the item: click the quantity to add
 
 | Setting | What it does |
 | --- | --- |
-| Accent colour, Background | Colours for the app and the overlay |
+| Accent colour | Pick one of six presets, or click the ringed swatch and choose any colour you want. The anger mark and mouth on the app icon change to match |
+| Background | Eight backgrounds for the app and the overlay, including Match accent, which uses a dark shade of your accent colour |
 | Shortcuts | Click a shortcut, then press the new key combination |
 | Offer regions | Re-run the capture setup |
 | Save debug captures | Keeps the screenshots and text of every scan, for bug reports |
@@ -135,6 +139,7 @@ If a quantity is ever read wrong, hover over the item: click the quantity to add
 | Fair trade range | How close the sides must be to count as fair (default 3%) |
 | Sound effects, Volume | Short sounds for scans and results |
 | Keep values up to date | Refresh the list on launch when it's more than three days old |
+| Discord status | Shows "Checking MM2 trades" and how many trades you've checked on your Discord profile, with links to download the app and join the server |
 
 <p align="center">
   <img src="docs/settings.png" width="420" alt="Settings">
@@ -153,7 +158,7 @@ If a quantity is ever read wrong, hover over the item: click the quantity to add
 | The overlay is off screen | Settings > Overlay > Reset. |
 | A "window changed size" note | The Roblox window isn't the size it was during setup. Run the setup again. |
 
-Bug reports are welcome on the [issue tracker](https://github.com/DepravitiesFinest/MM2TradeOverlay/issues). Please include the debug capture folder and `%LOCALAPPDATA%\MM2TradeOverlay\log.txt`.
+Bug reports are welcome on the [issue tracker](https://github.com/DepravitiesFinest/MM2TradeOverlay/issues) or in the [Discord server](https://discord.gg/M8kF83Uzms). Please include the debug capture folder and `%LOCALAPPDATA%\MM2TradeOverlay\log.txt`.
 
 ## Building from source
 
@@ -244,6 +249,8 @@ To refresh the value list that ships inside the exe, run with `--fetch`, copy `s
 Made by **Hyper** ([github.com/DepravitiesFinest](https://github.com/DepravitiesFinest)).
 
 Item values, demand ratings and item images come from [MM2Values.com](https://www.mm2values.com). This project isn't affiliated with Roblox, Nikilis or MM2Values.
+
+Discord status uses [DiscordRichPresence](https://github.com/Lachee/discord-rpc-csharp) by Lachee (MIT).
 
 ## License
 

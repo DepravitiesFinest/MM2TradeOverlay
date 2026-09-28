@@ -19,17 +19,30 @@
                             <TextBlock Text="Accent colour" FontWeight="SemiBold"/>
                             <TextBlock x:Name="AccentName" Style="{StaticResource Muted}" Margin="0,3,0,0"/>
                         </StackPanel>
-                        <StackPanel x:Name="AccentPanel" Orientation="Horizontal" HorizontalAlignment="Right"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <StackPanel x:Name="AccentPanel" Orientation="Horizontal"/>
+                            <Border Width="1" Height="22" Background="{DynamicResource LineBrush}" Margin="2,0,12,0" VerticalAlignment="Center"/>
+                            <RadioButton x:Name="CustomSwatch" Style="{StaticResource CustomSwatch}" GroupName="Accent"
+                                         ToolTip="Pick any colour" Click="CustomSwatch_Click"/>
+                        </StackPanel>
+                        <Popup x:Name="PickerPopup" PlacementTarget="{Binding ElementName=CustomSwatch}" Placement="Bottom"
+                               HorizontalOffset="-248" VerticalOffset="2" StaysOpen="False" AllowsTransparency="True" PopupAnimation="Fade">
+                            <Border Margin="12,4,12,20" Padding="14" CornerRadius="14" BorderThickness="1"
+                                    Background="{DynamicResource Surface3Brush}" BorderBrush="{DynamicResource BorderStrongBrush}">
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="22" ShadowDepth="6" Direction="270" Opacity="0.45"/>
+                                </Border.Effect>
+                                <local:ColorPicker x:Name="Picker"/>
+                            </Border>
+                        </Popup>
                     </Grid>
                     <Border Style="{StaticResource Divider}"/>
                     <Grid>
                         <StackPanel VerticalAlignment="Center">
                             <TextBlock Text="Background" FontWeight="SemiBold"/>
-                            <TextBlock Text="Applies to the app and the in-game overlay" Style="{StaticResource Muted}" Margin="0,3,0,0"/>
+                            <TextBlock x:Name="BaseName" Style="{StaticResource Muted}" Margin="0,3,0,0"/>
                         </StackPanel>
-                        <Border Style="{StaticResource SegmentHost}" HorizontalAlignment="Right" VerticalAlignment="Center">
-                            <StackPanel x:Name="BasePanel" Orientation="Horizontal"/>
-                        </Border>
+                        <StackPanel x:Name="BasePanel" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                     </Grid>
                 </StackPanel>
             </Border>
@@ -188,25 +201,61 @@
                             <TextBlock Text="Refresh on launch when the list is more than 3 days old" Style="{StaticResource Muted}" Margin="0,3,0,0"/>
                         </StackPanel>
                     </CheckBox>
+                    <Border Style="{StaticResource Divider}"/>
+                    <CheckBox x:Name="PresenceToggle" Style="{StaticResource ToggleSwitch}" Checked="Toggle_Changed" Unchecked="Toggle_Changed">
+                        <StackPanel>
+                            <TextBlock Text="Discord status" FontWeight="SemiBold"/>
+                            <TextBlock Text="Show that you're using the overlay on your Discord profile" Style="{StaticResource Muted}" Margin="0,3,0,0"/>
+                        </StackPanel>
+                    </CheckBox>
                 </StackPanel>
             </Border>
 
             <TextBlock Text="About" Style="{StaticResource SectionLabel}"/>
             <Border Style="{StaticResource Card}">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Image Source="pack://application:,,,/Assets/app.png" Width="44" Height="44" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Top"/>
-                    <StackPanel Grid.Column="1" Margin="14,0,12,0">
-                        <TextBlock x:Name="AboutTitle" FontWeight="SemiBold"/>
-                        <TextBlock Style="{StaticResource Muted}" Margin="0,4,0,0" LineHeight="18"
-                                   Text="Reads your screen with Windows' built-in OCR. It never injects into, modifies or reads memory from Roblox. Values and item images come from mm2values.com. Not affiliated with Roblox, Nikilis or mm2values.com."/>
-                    </StackPanel>
-                    <Button Grid.Column="2" Style="{StaticResource GhostButton}" Content="Open data folder" Click="OpenData_Click" VerticalAlignment="Top"/>
-                </Grid>
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Image Source="{DynamicResource LogoImage}" Width="44" Height="44" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Top"/>
+                        <StackPanel Grid.Column="1" Margin="14,0,12,0">
+                            <TextBlock x:Name="AboutTitle" FontWeight="SemiBold"/>
+                            <TextBlock Style="{StaticResource Muted}" Margin="0,4,0,0" LineHeight="18"
+                                       Text="Reads your screen with Windows' built-in OCR. It never injects into, modifies or reads memory from Roblox. Values and item images come from mm2values.com. Not affiliated with Roblox, Nikilis or mm2values.com."/>
+                        </StackPanel>
+                        <Button Grid.Column="2" Style="{StaticResource GhostButton}" Content="Open data folder" Click="OpenData_Click" VerticalAlignment="Top"/>
+                    </Grid>
+                    <Border Style="{StaticResource Divider}"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Style="{StaticResource Note}" VerticalAlignment="Center" Margin="0,0,16,0">
+                            <TextBlock Style="{StaticResource Muted}" TextWrapping="Wrap" LineHeight="18">
+                                <Run Text="This app is free and the only official download is on GitHub." Foreground="{DynamicResource TextBrush}"/>
+                                <Run Text="If you got it from anywhere else it isn't legitimate software, and if you paid for it, you were scammed."/>
+                            </TextBlock>
+                        </Border>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Button Style="{StaticResource SecondaryButton}" Click="GitHub_Click" Margin="0,0,8,0" ToolTip="{x:Static local:AppInfo.GitHubUrl}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="GitHub"/>
+                                    <TextBlock Text="&#xE8A7;" Style="{StaticResource Icon}" FontSize="11" Margin="8,0,0,0"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource SecondaryButton}" Click="Discord_Click" ToolTip="{x:Static local:AppInfo.DiscordUrl}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Discord"/>
+                                    <TextBlock Text="&#xE8A7;" Style="{StaticResource Icon}" FontSize="11" Margin="8,0,0,0"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
             </Border>
         </StackPanel>
     </ScrollViewer>

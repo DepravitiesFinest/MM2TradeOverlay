@@ -34,6 +34,7 @@ public sealed class AppController : IDisposable
     public void Notify(string message, ToastKind kind = ToastKind.Info) => Toast?.Invoke(message, kind);
 
     private readonly HotkeyManager _hotkeys = new();
+    private readonly DiscordPresence _presence = new();
     private MainWindow _main = null!;
     private OverlayWindow _overlay = null!;
 
@@ -71,6 +72,7 @@ public sealed class AppController : IDisposable
         _main.Show();
 
         RegisterHotkeys();
+        ApplyPresence();
 
         if (Values.ItemCount == 0 || (Settings.AutoUpdateValues && Values.IsStale))
             _ = UpdateValuesAsync(silent: true);
@@ -200,6 +202,7 @@ public sealed class AppController : IDisposable
             LastScan = new TradeScan { Yours = give, Theirs = get, Notes = notes };
             Log.Info($"Scan: {give.Items.Count} vs {get.Items.Count} items, {give.Unknown.Count + get.Unknown.Count} unknown labels");
             _overlay.ShowScan(LastScan);
+            _presence.TradeChecked();
         }
         catch (Exception ex)
         {
@@ -333,6 +336,8 @@ public sealed class AppController : IDisposable
         Settings.SaveSoon();
     }
 
+    public void ApplyPresence() => _presence.SetEnabled(Settings.DiscordPresence);
+
     public void ShowOverlayPreview() => _overlay.ShowScan(LastScan, preview: LastScan == null);
 
     private void BringMainToFront()
@@ -385,6 +390,7 @@ public sealed class AppController : IDisposable
     {
         Settings.Save();
         _hotkeys.Dispose();
+        _presence.Dispose();
     }
 
     private sealed class CaptureShield : IDisposable

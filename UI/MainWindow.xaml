@@ -8,7 +8,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:TradeValueOverlay"
         Title="MM2 Trade Overlay"
-        Icon="pack://application:,,,/Assets/app.ico"
+        Icon="{DynamicResource LogoImage}"
         Width="1000" Height="700" MinWidth="860" MinHeight="580"
         WindowStartupLocation="CenterScreen"
         Background="{DynamicResource BgBrush}" Foreground="{DynamicResource TextBrush}"
@@ -29,7 +29,7 @@
             <Border BorderBrush="{DynamicResource LineBrush}" BorderThickness="0,0,1,0" Background="#08FFFFFF">
                 <Grid>
                     <StackPanel HorizontalAlignment="Center" Margin="0,16,0,0">
-                        <Image Source="pack://application:,,,/Assets/app.png" Width="38" Height="38" Margin="0,0,0,22"
+                        <Image Source="{DynamicResource LogoImage}" Width="38" Height="38" Margin="0,0,0,22"
                                RenderOptions.BitmapScalingMode="HighQuality" ToolTip="MM2 Trade Overlay"/>
                         <RadioButton x:Name="NavTrade" Style="{StaticResource NavItem}" Content="Trade" Tag="&#xE8AB;" IsChecked="True" Checked="Nav_Checked"/>
                         <RadioButton x:Name="NavValues" Style="{StaticResource NavItem}" Content="Values" Tag="&#xE8FD;" Checked="Nav_Checked"/>

@@ -5,6 +5,7 @@
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace TradeValueOverlay;
 
@@ -41,6 +42,7 @@ public partial class SettingsPage : UserControl
         DebugToggle.IsChecked = s.SaveDebugCaptures;
         SoundToggle.IsChecked = s.SoundsEnabled;
         AutoUpdateToggle.IsChecked = s.AutoUpdateValues;
+        PresenceToggle.IsChecked = s.DiscordPresence;
         foreach (RadioButton rb in AutoHidePanel.Children)
             rb.IsChecked = int.Parse((string)rb.Tag) == s.AutoHideSeconds;
         if (AutoHidePanel.Children.OfType<RadioButton>().All(r => r.IsChecked != true))
@@ -74,9 +76,9 @@ public partial class SettingsPage : UserControl
             {
                 Style = (Style)FindResource("Swatch"),
                 GroupName = "Accent",
-                Background = new System.Windows.Media.SolidColorBrush(accent.Color),
+                Background = new SolidColorBrush(accent.Color),
                 ToolTip = accent.Name,
-                IsChecked = ThemeManager.AccentFor(s.Accent) == accent,
+                IsChecked = !ThemeManager.IsCustom(s.Accent) && ThemeManager.AccentFor(s.Accent) == accent,
             };
             swatch.Checked += (_, _) =>
             {
@@ -87,24 +89,60 @@ public partial class SettingsPage : UserControl
             AccentPanel.Children.Add(swatch);
         }
 
-        foreach (var option in ThemeManager.Bases)
+        CustomSwatch.IsChecked = ThemeManager.IsCustom(s.Accent);
+        Picker.ColorChanged += color =>
         {
-            var segment = new RadioButton
+            s.Accent = s.CustomAccent = ThemeManager.ToHex(color);
+            _app.ApplyLook();
+            ShowAppearance();
+        };
+
+        var current = ThemeManager.ResolveBase(s.ThemeBase, s.Accent).Key;
+        foreach (var key in ThemeManager.Bases.Select(b => b.Key).Append(ThemeManager.MatchAccentKey))
+        {
+            var tile = new RadioButton
             {
-                Style = (Style)FindResource("Segment"),
+                Style = (Style)FindResource("BaseSwatch"),
                 GroupName = "ThemeBase",
-                Content = option.Name,
-                IsChecked = ThemeManager.BaseFor(s.ThemeBase) == option,
+                Tag = key,
+                IsChecked = key == current,
             };
-            segment.Checked += (_, _) =>
+            tile.Checked += (_, _) =>
             {
                 if (_loading) return;
-                s.ThemeBase = option.Key;
+                s.ThemeBase = key;
                 ApplyTheme();
             };
-            BasePanel.Children.Add(segment);
+            BasePanel.Children.Add(tile);
         }
-        AccentName.Text = ThemeManager.AccentFor(s.Accent).Name;
+        ShowAppearance();
+    }
+
+    private void ShowAppearance()
+    {
+        var s = _app.Settings;
+        AccentName.Text = ThemeManager.DescribeAccent(s.Accent);
+        BaseName.Text = ThemeManager.ResolveBase(s.ThemeBase, s.Accent).Name;
+        CustomSwatch.Background = new SolidColorBrush(ThemeManager.ResolveAccent(s.CustomAccent ?? s.Accent).Color);
+
+        foreach (RadioButton tile in BasePanel.Children)
+        {
+            var look = ThemeManager.ResolveBase((string)tile.Tag, s.Accent);
+            tile.Background = new SolidColorBrush(look.Bg);
+            tile.BorderBrush = new SolidColorBrush(look.Strong);
+            tile.Foreground = new SolidColorBrush(look.Surface3);
+            tile.ToolTip = look.Name;
+        }
+    }
+
+    private void CustomSwatch_Click(object sender, RoutedEventArgs e)
+    {
+        var s = _app.Settings;
+        var start = ThemeManager.ResolveAccent(s.CustomAccent ?? s.Accent).Color;
+        s.Accent = s.CustomAccent = ThemeManager.ToHex(start);
+        Picker.SetColor(start);
+        ApplyTheme();
+        PickerPopup.IsOpen = true;
     }
 
     private void BuildChoices()
@@ -160,7 +198,7 @@ public partial class SettingsPage : UserControl
     private void ApplyTheme()
     {
         _app.ApplyLook();
-        AccentName.Text = ThemeManager.AccentFor(_app.Settings.Accent).Name;
+        ShowAppearance();
         _app.Settings.SaveSoon();
         Sounds.Play(Sfx.Tap);
     }
@@ -178,6 +216,11 @@ public partial class SettingsPage : UserControl
         {
             _app.ApplyLook();
             _app.ShowOverlayPreview();
+        }
+        if (s.DiscordPresence != (PresenceToggle.IsChecked == true))
+        {
+            s.DiscordPresence = PresenceToggle.IsChecked == true;
+            _app.ApplyPresence();
         }
         Sounds.Enabled = s.SoundsEnabled;
         Sounds.Play(Sfx.Tap);
@@ -205,6 +248,12 @@ public partial class SettingsPage : UserControl
     private void OpenDebug_Click(object sender, RoutedEventArgs e) => OpenFolder(AppPaths.DebugDir);
 
     private void OpenData_Click(object sender, RoutedEventArgs e) => OpenFolder(AppPaths.DataDir);
+
+    private void GitHub_Click(object sender, RoutedEventArgs e) => OpenLink(AppInfo.GitHubUrl);
+
+    private void Discord_Click(object sender, RoutedEventArgs e) => OpenLink(AppInfo.DiscordUrl);
+
+    private static void OpenLink(string url) => Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
 
     private static void OpenFolder(string path) =>
         Process.Start(new ProcessStartInfo("explorer.exe", $"\"{path}\"") { UseShellExecute = true });

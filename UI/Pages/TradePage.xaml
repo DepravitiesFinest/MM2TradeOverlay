@@ -95,7 +95,7 @@
 
             <Border x:Name="EmptyCard" Style="{StaticResource Card}" Margin="0,24,0,0" Padding="28,44" Visibility="Collapsed">
                 <StackPanel HorizontalAlignment="Center">
-                    <Image Source="pack://application:,,,/Assets/app.png" Width="56" Height="56" RenderOptions.BitmapScalingMode="HighQuality" HorizontalAlignment="Center"/>
+                    <Image Source="{DynamicResource LogoImage}" Width="56" Height="56" RenderOptions.BitmapScalingMode="HighQuality" HorizontalAlignment="Center"/>
                     <TextBlock Text="Ready when you are" FontFamily="{StaticResource DisplayFont}" FontSize="19" FontWeight="SemiBold"
                                HorizontalAlignment="Center" Margin="0,18,0,0"/>
                     <TextBlock Style="{StaticResource Muted}" FontSize="13" TextAlignment="Center" MaxWidth="400" Margin="0,8,0,0" LineHeight="20"

@@ -34,7 +34,7 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <Image Source="pack://application:,,,/Assets/app.png" Width="22" Height="22" Margin="0,0,10,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                    <Image Source="{DynamicResource LogoImage}" Width="22" Height="22" Margin="0,0,10,0" RenderOptions.BitmapScalingMode="HighQuality"/>
                     <TextBlock Grid.Column="1" Text="Trade check" FontWeight="SemiBold" VerticalAlignment="Center"/>
                     <TextBlock Grid.Column="2" Text="{Binding Time}" Foreground="{DynamicResource TextFaintBrush}" FontSize="12"
                                VerticalAlignment="Center" Margin="0,0,6,0"/>

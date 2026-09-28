@@ -1,0 +1,113 @@
+<!--
+    MM2 Trade Overlay
+    Copyright (c) 2026 Hyper (https://github.com/DepravitiesFinest)
+    Licensed under the MIT License. See LICENSE in the project root.
+-->
+<UserControl x:Class="TradeValueOverlay.ColorPicker"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <Style x:Key="HexField" TargetType="TextBox">
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="CaretBrush" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="SelectionBrush" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="FontFamily" Value="Cascadia Mono, Consolas"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="CharacterCasing" Value="Upper"/>
+            <Setter Property="MaxLength" Value="7"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="Bd" Background="{DynamicResource Surface2Brush}" BorderBrush="{DynamicResource LineBrush}"
+                                BorderThickness="1" CornerRadius="10">
+                            <Grid Margin="12,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="HEX" FontSize="10.5" FontWeight="SemiBold" Foreground="{DynamicResource TextFaintBrush}"
+                                           VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                <ScrollViewer x:Name="PART_ContentHost" Grid.Column="1" VerticalAlignment="Center" Focusable="False"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource BorderStrongBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <StackPanel Width="248">
+        <Grid x:Name="Field" Height="156" Cursor="Cross" Background="Transparent"
+              MouseLeftButtonDown="Field_MouseDown" MouseMove="Field_MouseMove" MouseLeftButtonUp="Drag_MouseUp">
+            <Border x:Name="HueFill" CornerRadius="8"/>
+            <Border CornerRadius="8">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Color="#FFFFFFFF" Offset="0"/>
+                        <GradientStop Color="#00FFFFFF" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+            </Border>
+            <Border CornerRadius="8">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="#00000000" Offset="0"/>
+                        <GradientStop Color="#FF000000" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+            </Border>
+            <Canvas IsHitTestVisible="False">
+                <Ellipse x:Name="FieldThumb" Width="16" Height="16" Stroke="White" StrokeThickness="2">
+                    <Ellipse.Effect>
+                        <DropShadowEffect BlurRadius="5" ShadowDepth="0" Opacity="0.7"/>
+                    </Ellipse.Effect>
+                </Ellipse>
+            </Canvas>
+        </Grid>
+
+        <Grid x:Name="HueBar" Height="12" Margin="0,16,0,0" Cursor="Hand" Background="Transparent"
+              MouseLeftButtonDown="Hue_MouseDown" MouseMove="Hue_MouseMove" MouseLeftButtonUp="Drag_MouseUp">
+            <Border CornerRadius="6">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Color="#FF0000" Offset="0"/>
+                        <GradientStop Color="#FFFF00" Offset="0.1667"/>
+                        <GradientStop Color="#00FF00" Offset="0.3333"/>
+                        <GradientStop Color="#00FFFF" Offset="0.5"/>
+                        <GradientStop Color="#0000FF" Offset="0.6667"/>
+                        <GradientStop Color="#FF00FF" Offset="0.8333"/>
+                        <GradientStop Color="#FF0000" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+            </Border>
+            <Canvas IsHitTestVisible="False">
+                <Ellipse x:Name="HueThumb" Width="18" Height="18" Canvas.Top="-3" Stroke="White" StrokeThickness="2.5">
+                    <Ellipse.Effect>
+                        <DropShadowEffect BlurRadius="5" ShadowDepth="0" Opacity="0.7"/>
+                    </Ellipse.Effect>
+                </Ellipse>
+            </Canvas>
+        </Grid>
+
+        <Grid Margin="0,16,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Border x:Name="Preview" Width="38" Height="38" CornerRadius="10"
+                    BorderBrush="{DynamicResource BorderStrongBrush}" BorderThickness="1"/>
+            <TextBox x:Name="HexBox" Grid.Column="1" Margin="10,0,0,0" Style="{StaticResource HexField}"
+                     TextChanged="HexBox_TextChanged" LostKeyboardFocus="HexBox_LostFocus" KeyDown="HexBox_KeyDown"/>
+        </Grid>
+    </StackPanel>
+</UserControl>
